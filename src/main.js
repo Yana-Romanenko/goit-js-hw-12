@@ -20,6 +20,11 @@ const loadMoreBtn = document.querySelector('.load-more-button');
 
 const API_KEY = '41764451-f0ee5e8d00846e21c9f97a054';
 
+let currentPage = 1;
+let currentQuery = ""; 
+let totalHits = 0;
+let cardHeight = 0; 
+
 
 function showLoader() {
   loader.style.display = 'block';
@@ -42,6 +47,10 @@ function hideLoader() {
         return;
           }
       
+      currentQuery = query;
+      showLoader();
+
+      
       try {
     const response = await axios.get(`https://pixabay.com/api/`, {
         params: {
@@ -58,7 +67,7 @@ function hideLoader() {
     const data = response.data;
      
     if (data.hits && data.hits.length > 0) {
-        totalHits = data.totalHits; // Update totalHits
+        totalHits = data.totalHits; 
         const images = data.hits.map((hit) => ({
             url: hit.webformatURL,
             alt: hit.tags,
@@ -68,12 +77,13 @@ function hideLoader() {
             comments: hit.comments,
             downloads: hit.downloads,
         }));
-    }
+    
 
-    if (gallery.children.length === 0) {
+      if (gallery.children.length === 0) {
         const firstCard = gallery.appendChild(createGalleryCard(images[0]));
         cardHeight = firstCard.getBoundingClientRect().height;
         gallery.innerHTML = "";
+      }
 
         updateGallery(images);
     } else {
@@ -95,9 +105,6 @@ function hideLoader() {
     toggleLoadMoreButton();
   };
     });
-    
-currentQuery = query;
-showLoader();
 
 
 
@@ -121,7 +128,7 @@ try {
     const data = response.data;
 
     if (data.hits && data.hits.length > 0) {
-      totalHits = data.totalHits; // Update totalHits
+      totalHits = data.totalHits; 
       const images = data.hits.map((hit) => ({
         url: hit.webformatURL,
         alt: hit.tags,
@@ -148,15 +155,14 @@ try {
     position: "topRight",
   });
 } finally {
-  loader.style.display = "none"; // Hide the loader once the images are loaded
+  hideLoader(); 
   toggleLoadMoreButton();
 }
-loader.textContent = ""; // Set loader text to an empty string
-loader.style.display = "none"; // Hide the loader once the images are loaded
+loader.textContent = ""; 
+  hideLoader(); 
 toggleLoadMoreButton();
-    // Smoothly scroll to the next set of images
     window.scrollBy({
-      top: cardHeight * 2, // Scroll by twice the height of one card
+      top: cardHeight * 2, 
       behavior: 'smooth',
     });
   }
@@ -173,17 +179,14 @@ function updateGallery(images) {
   gallery.innerHTML += galleryMarkup;
   lightbox.refresh();
 
-  // Show/hide the "Load more" button based on totalHits and current gallery items
   toggleLoadMoreButton();
 }
 
 function toggleLoadMoreButton() {
-  // Show/hide the "Load more" button based on totalHits and current gallery items
   if (totalHits > gallery.children.length) {
-    loadMoreBtn.style.display = "block";
+    showLoader();
   } else {
-    loadMoreBtn.style.display = "none";
-    // Display a message when the user reaches the end of search results
+    hideLoader();
     if (gallery.children.length > 0) {
       iziToast.info({
         title: "Info",
@@ -194,7 +197,6 @@ function toggleLoadMoreButton() {
   }
 }
 
-// Function to create a gallery card element
 function createGalleryCard(image) {
   const card = document.createElement("div");
   card.classList.add("gallery-card");
