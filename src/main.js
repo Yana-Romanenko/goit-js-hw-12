@@ -47,7 +47,10 @@ function hideLoader() {
         return;
           }
       
+      currentPage = 1;
+      
       currentQuery = query;
+      loader.textContent = "Loading images, please wait...";
       showLoader();
 
       
@@ -64,7 +67,8 @@ function hideLoader() {
         }
     });
     
-    const data = response.data;
+        const data = response.data;
+        hideLoader();
      
     if (data.hits && data.hits.length > 0) {
         totalHits = data.totalHits; 
@@ -100,7 +104,8 @@ function hideLoader() {
       message: "An error occurred while fetching data. Please try again later.",
       position: "topRight",
     });
-  } finally {
+      } finally {
+        loader.textContent = "";
     hideLoader();
     toggleLoadMoreButton();
   };
@@ -111,6 +116,7 @@ function hideLoader() {
 
 loadMoreBtn.addEventListener("click", async () => {
   loader.textContent = "Loading images, please wait...";
+  showLoader();
 
 try {
   const response = await axios.get(`https://pixabay.com/api/`, {
@@ -125,7 +131,8 @@ try {
       },
     });
 
-    const data = response.data;
+  const data = response.data;
+  hideLoader();
 
     if (data.hits && data.hits.length > 0) {
       totalHits = data.totalHits; 
@@ -155,18 +162,23 @@ try {
     position: "topRight",
   });
 } finally {
+  loader.textContent = "";
   hideLoader(); 
   toggleLoadMoreButton();
 }
-loader.textContent = ""; 
-  hideLoader(); 
-toggleLoadMoreButton();
+ 
     window.scrollBy({
       top: cardHeight * 2, 
       behavior: 'smooth',
     });
+  toggleLoadMoreButton();
   }
 );
+
+ window.scrollBy({
+      top: cardHeight * 2, 
+      behavior: 'smooth',
+    });
 
 function updateGallery(images) {
   const galleryMarkup = images.reduce((html, image) =>  html + `
@@ -184,9 +196,9 @@ function updateGallery(images) {
 
 function toggleLoadMoreButton() {
   if (totalHits > gallery.children.length) {
-    showLoader();
+   loadMoreBtn.style.display = "block";
   } else {
-    hideLoader();
+    loadMoreBtn.style.display = "none";
     if (gallery.children.length > 0) {
       iziToast.info({
         title: "Info",
