@@ -35,7 +35,7 @@ function hideLoader() {
 
     searchForm.addEventListener('submit', async(event) => {
       event.preventDefault();
-      
+       currentPage = 1;
        gallery.innerHTML = "";
 
   const query = searchInput.value.trim();
@@ -48,8 +48,7 @@ function hideLoader() {
         });
         return;
           }
-      
-      currentPage = 1;
+  
       
       currentQuery = query;
       showLoader();
@@ -86,22 +85,23 @@ function hideLoader() {
     
       loadMoreBtn.style.display = "none";
 
-      
       const firstCard = createGalleryCard(images[0]);
       gallery.appendChild(firstCard);
         cardHeight = firstCard.getBoundingClientRect().height;
-        
 
-        updateGallery(images);
+      updateGallery(images);
+       window.scrollBy({
+      top: cardHeight * 2, 
+      behavior: 'smooth',
+    });
     } else {
     iziToast.info({
         title: "Info",
         message: "Sorry, there are no images matching your search query. Please try again!",
-        position: "topRight",
+      position: "topRight",
     });
 }
 } catch (error) {
-    // console.error("Error fetching data:", error);
     iziToast.error({
       title: "Error",
       message: "An error occurred while fetching data. Please try again later.",
@@ -110,7 +110,7 @@ function hideLoader() {
       } finally {
         loader.textContent = "";
         hideLoader();
-        
+       
     toggleLoadMoreButton();
   };
     });
@@ -140,7 +140,7 @@ try {
 
     if (data.hits && data.hits.length > 0) {
       totalHits = data.totalHits; 
-      const images = data.hits.map((hit) => ({
+        const images = data.hits.map((hit) => ({
         url: hit.webformatURL,
         alt: hit.tags,
         largeUrl: hit.largeImageURL,
@@ -151,6 +151,7 @@ try {
       }));
 
       updateGallery(images);
+      lightbox.refresh();
     } else {
       iziToast.info({
         title: "Info",
@@ -159,7 +160,6 @@ try {
       });
     }
   }  catch (error) {
-  // console.error("Error fetching data:", error);
   iziToast.error({
     title: "Error",
     message: "An error occurred while fetching data. Please try again later.",
@@ -168,13 +168,8 @@ try {
 } finally {
   loader.textContent = "";
   hideLoader(); 
-  
-   window.scrollBy({
-      top: cardHeight * 2, 
-      behavior: 'smooth',
-    });
 }
- 
+  
   toggleLoadMoreButton();
   }
 );
@@ -189,12 +184,7 @@ function updateGallery(images) {
          Downloads: ${image.downloads}">
           <img src="${image.url}" alt="${image.alt}" />
         </a>`, '');
-  gallery.insertAdjacentHTML('beforeend', galleryMarkup);
-  lightbox.refresh();
-
-  // currentPage += 1;
-
-  toggleLoadMoreButton();
+  gallery.insertAdjacentHTML('beforeend', galleryMarkup); 
 }
 
 function toggleLoadMoreButton() {
