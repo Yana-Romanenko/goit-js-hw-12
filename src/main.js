@@ -85,9 +85,9 @@ function hideLoader() {
     
       loadMoreBtn.style.display = "none";
 
-      const firstCard = createGalleryCard(images[0]);
-      gallery.appendChild(firstCard);
-        cardHeight = firstCard.getBoundingClientRect().height;
+      // const firstCard = createGalleryCard(images[0]);
+      // gallery.appendChild(firstCard);
+      //   cardHeight = firstCard.getBoundingClientRect().height;
 
       updateGallery(images);
        window.scrollBy({
@@ -151,6 +151,7 @@ try {
       }));
 
       updateGallery(images);
+      // можна додати скрол
       lightbox.refresh();
     } else {
       iziToast.info({
@@ -185,6 +186,7 @@ function updateGallery(images) {
           <img src="${image.url}" alt="${image.alt}" />
         </a>`, '');
   gallery.insertAdjacentHTML('beforeend', galleryMarkup); 
+  lightbox.refresh();
 }
 
 function toggleLoadMoreButton() {
