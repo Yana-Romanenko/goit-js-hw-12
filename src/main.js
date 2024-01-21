@@ -98,14 +98,16 @@ function hideLoader() {
 
 
 loadMoreBtn.addEventListener("click", async () => {
-  loader.textContent = "Loading images, please wait...";
-  showLoader();
 
-  //   const cardHeight = document.querySelector('gallery-item').getBoundingClientRect().height;
+  //    const cardHeight = document.querySelector('gallery-item').getBoundingClientRect().height;
   //  window.scrollBy({
   //     top: cardHeight * 2, 
   //     behavior: 'smooth',
   //  });
+  loader.textContent = "Loading images, please wait...";
+  showLoader();
+
+ 
 
 try {
   const {data: {hits, totalHits}} = await axios.get(`https://pixabay.com/api/`, {
