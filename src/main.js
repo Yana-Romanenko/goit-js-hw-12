@@ -102,8 +102,10 @@ function hideLoader() {
 loadMoreBtn.addEventListener("click", async () => {
   loader.textContent = "Loading images, please wait...";
   showLoader();
+
  
-try {
+  try {
+  
   const {data: {hits, totalHits}} = await axios.get(`https://pixabay.com/api/`, {
       params: {
         key: API_KEY,
@@ -114,10 +116,10 @@ try {
         page: currentPage,
         per_page: 40,
       },
-    });
+  });
   hideLoader();
-  updateGallery(hits);
-  lightbox.refresh();
+    updateGallery(hits);
+    lightbox.refresh();
   
     const cardHeight = document
       .querySelector('.gallery-item')
