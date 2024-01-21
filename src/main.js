@@ -24,7 +24,6 @@ const API_KEY = '41764451-f0ee5e8d00846e21c9f97a054';
 let currentPage = 1;
 let currentQuery = ""; 
 let totalHits = 0;
-let cardHeight = 0; 
 
 
 function showLoader() {
@@ -38,7 +37,8 @@ function hideLoader() {
       event.preventDefault();
       loadMoreBtn.style.display = "none";
        currentPage = 1;
-       gallery.innerHTML = "";
+      gallery.innerHTML = "";
+      
 
   const query = searchInput.value.trim();
           if (!query) {
@@ -58,7 +58,7 @@ function hideLoader() {
 
       
       try {
-    const response = await axios.get(`https://pixabay.com/api/`, {
+    const {data: {hits, totalHits}} = await axios.get(`https://pixabay.com/api/`, {
         params: {
             key: API_KEY,
             q: currentQuery,
@@ -69,23 +69,11 @@ function hideLoader() {
             per_page: 40,
         }
     });
-    
-        const data = response.data;
         hideLoader();
      
-    if (data.hits && data.hits.length > 0) {
-        totalHits = data.totalHits; 
-        const images = data.hits.map((hit) => ({
-            url: hit.webformatURL,
-            alt: hit.tags,
-            largeUrl: hit.largeImageURL,
-            likes: hit.likes,
-            views: hit.views,
-            comments: hit.comments,
-            downloads: hit.downloads,
-        }));
-
-      updateGallery(images);
+    if (hits && hits.length > 0) {
+      updateGallery(hits);
+      loadMoreBtn.style.display = "block";
     
     } else {
     iziToast.info({
@@ -94,7 +82,8 @@ function hideLoader() {
       position: "topRight",
     });
 }
-} catch (error) {
+      } catch (error) {
+        console.log(error);
     iziToast.error({
       title: "Error",
       message: "An error occurred while fetching data. Please try again later.",
@@ -103,28 +92,23 @@ function hideLoader() {
       } finally {
         loader.textContent = "";
         hideLoader();
-       
-    toggleLoadMoreButton();
   };
     });
 
 
 
-
 loadMoreBtn.addEventListener("click", async () => {
-   const firstCard = createGalleryCard(images[0]);
-      gallery.appendChild(firstCard);
-  cardHeight = document.querySelector('img').getBoundingClientRect().height;
-  updateGallery(images);
-   window.scrollBy({
-      top: cardHeight * 2, 
-      behavior: 'smooth',
-    });
   loader.textContent = "Loading images, please wait...";
   showLoader();
 
+  //   const cardHeight = document.querySelector('gallery-item').getBoundingClientRect().height;
+  //  window.scrollBy({
+  //     top: cardHeight * 2, 
+  //     behavior: 'smooth',
+  //  });
+
 try {
-  const response = await axios.get(`https://pixabay.com/api/`, {
+  const {data: {hits, totalHits}} = await axios.get(`https://pixabay.com/api/`, {
       params: {
         key: API_KEY,
         q: currentQuery,
@@ -135,31 +119,8 @@ try {
         per_page: 40,
       },
     });
-
-  const data = response.data;
   hideLoader();
-
-    if (data.hits && data.hits.length > 0) {
-      totalHits = data.totalHits; 
-        const images = data.hits.map((hit) => ({
-        url: hit.webformatURL,
-        alt: hit.tags,
-        largeUrl: hit.largeImageURL,
-        likes: hit.likes,
-        views: hit.views,
-        comments: hit.comments,
-        downloads: hit.downloads,
-      }));
-
-      updateGallery(images);
-      lightbox.refresh();
-    } else {
-      iziToast.info({
-        title: "Info",
-        message: "No more images to load.",
-        position: "topRight",
-      });
-    }
+      updateGallery(hits);
   }  catch (error) {
   iziToast.error({
     title: "Error",
@@ -170,64 +131,38 @@ try {
   loader.textContent = "";
   hideLoader(); 
 }
-  
-  toggleLoadMoreButton();
   }
 );
 
  
 
 function updateGallery(images) {
-  const galleryMarkup = images.reduce((html, image) => html + `
-<div class="gallery-item">
-      <img src="${image.largeImageURL}" alt="${image.tags}">
+  const galleryMarkup = images.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => `
+<li class="gallery-item">
+     <a href="${largeImageURL}">
+     <img src="${webformatURL}" alt="${tags}">
       <div class="image-info">
-        <div class="img-info-item">
-          <p>Likes:</p>
-          <p>${image.likes}</p>
-        </div>
-        <div class="img-info-item">
-          <p>Views: </p>
-          <p>${image.views}</p>
-        </div>
-        <div class="img-info-item">
-          <p>Comments: </p>
-          <p>${image.comments}</p>
-        </div>
-        <div class="img-info-item">
-          <p>Downloads: </p>
-          <p>${image.downloads}</p>
-        </div>
+          <p>Likes:${likes}</p>
+          <p>Views: ${views}</p>
+          <p>Comments: ${comments}</p>
+  <p>Downloads: ${downloads}</p>
       </div>
-    </div>`, '');
+     </a>
+    </li>`).join('');
   gallery.insertAdjacentHTML('beforeend', galleryMarkup); 
   lightbox.refresh();
 }
 
 
-function toggleLoadMoreButton() {
-  if (totalHits > gallery.children.length) {
-   loadMoreBtn.style.display = "block";
-  } else {
-    loadMoreBtn.style.display = "none";
-    if (gallery.children.length > 0 && currentPage > 1 && totalHits === gallery.children.length) {
-      iziToast.info({
-        title: "Info",
-        message: "We're sorry, but you've reached the end of search results",
-        position: "topRight",
-      });
-    }
-  }
+if (currentPage === Math.ceil(totalHits / per_page)) {
+  loadMoreBtn.removeEventListener('click', loadImagesFromSearch);
+   iziToast.info({
+    title: "Info",
+    message: "We're sorry, but you've reached the end of search results",
+    position: "topRight",
+  });
 }
 
-function createGalleryCard(image) {
-  const card = document.createElement("div");
-  card.classList.add("gallery-card");
 
-  const img = document.createElement("img");
-  img.src = image.url;
-  img.alt = image.alt;
 
-  card.appendChild(img);
-  return card;
-}
+
