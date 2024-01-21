@@ -176,16 +176,72 @@ try {
 );
 
  
+const galleryMarkup = hits.reduce(
+        (html, image) =>
+          html +
+          `<a class="gallery-link" href="${image.largeImageURL}">
+            <img
+                class="gallery-image"
+                src="${image.webformatURL}"
+                alt="${image.tags}"
+            />
+           <ul class="info-list">
+              <li class="info-item">
+                  <p class="info-title">Likes</p>
+                  <p class="info-value">${image.likes}</p>
+              </li>
+              <li class="info-item">
+                  <p class="info-title">Views</p>
+                  <p class="info-value">${image.views}</p>
+              </li>
+              <li class="info-item">
+                  <p class="info-title">Comments</p>
+                  <p class="info-value">${image.comments}</p>
+              </li>
+              <li class="info-item">
+                  <p class="info-title">Downloads</p>
+                  <p class="info-value">${image.downloads}</p>
+              </li>
+            </ul>
+        </a>`,
+        ''
+      );
+      gallery.insertAdjacentHTML('beforeend', galleryMarkup);
+      lightbox.refresh();
+  
 
 function updateGallery(images) {
-  const galleryMarkup = images.reduce((html, image) =>  html + `
-        <a href="${image.largeUrl}" data-lightbox="gallery" data-title="Likes: ${image.likes}, 
-        Views: ${image.views},
-         Comments: ${image.comments}, 
-         Downloads: ${image.downloads}">
-          <img src="${image.url}" alt="${image.alt}" />
-        </a>`, '');
-  gallery.insertAdjacentHTML('beforeend', galleryMarkup); 
+ const galleryMarkup = images.reduce(
+        (html, image) =>
+          html +
+          `<a class="gallery-link" href="${image.largeImageURL}">
+            <img
+                class="gallery-image"
+                src="${image.webformatURL}"
+                alt="${image.tags}"
+            />
+           <ul class="info-list">
+              <li class="info-item">
+                  <p class="info-title">Likes</p>
+                  <p class="info-value">${image.likes}</p>
+              </li>
+              <li class="info-item">
+                  <p class="info-title">Views</p>
+                  <p class="info-value">${image.views}</p>
+              </li>
+              <li class="info-item">
+                  <p class="info-title">Comments</p>
+                  <p class="info-value">${image.comments}</p>
+              </li>
+              <li class="info-item">
+                  <p class="info-title">Downloads</p>
+                  <p class="info-value">${image.downloads}</p>
+              </li>
+            </ul>
+        </a>`,
+        ''
+      );
+      gallery.insertAdjacentHTML('beforeend', galleryMarkup); 
   lightbox.refresh();
 }
 
