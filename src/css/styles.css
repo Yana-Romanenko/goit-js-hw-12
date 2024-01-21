@@ -26,7 +26,7 @@
 
 /* Форма */
 
-.picture-search-form {
+.search-form {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -65,7 +65,7 @@
   letter-spacing: 0.04em;
 }
 
-.picture-search-button {
+.search-button {
   min-width: 91px;
   height: 40px;
   padding: 8px 16px;
@@ -84,8 +84,8 @@
   letter-spacing: 0.04em;
 }
 
-.picture-search-button:hover,
-.picture-search-button:focus {
+.search-button:hover,
+.search-button:focus {
   background-color: #6c8cff;
 }
 
