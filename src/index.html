@@ -8,14 +8,14 @@
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
-    <form class="picture-search-form">
+    <form class="search-form">
       <input
         class="picture-search-name"
         type="text"
         name="picture-search"
         placeholder="Search images..."
       />
-      <button class="picture-search-button">Search</button>
+      <button class="search-button">Search</button>
     </form>
 
     <div class="loader-container">
@@ -23,8 +23,9 @@
     </div>
 
     <div class="gallery"></div>
+    <p class="loader spinner is-hidden">Loading images, please wait...</p>
     <div class="button-container">
-      <button class="load-more-button" style="display: none">Load more</button>
+      <button class="load-more-button">Load more</button>
     </div>
 
     <script type="module" src="./main.js"></script>
