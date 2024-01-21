@@ -36,6 +36,7 @@ function hideLoader() {
 
     searchForm.addEventListener('submit', async(event) => {
       event.preventDefault();
+      loadMoreBtn.style.display = "none";
        currentPage = 1;
        gallery.innerHTML = "";
 
@@ -83,18 +84,9 @@ function hideLoader() {
             comments: hit.comments,
             downloads: hit.downloads,
         }));
-    
-      loadMoreBtn.style.display = "none";
-
-      const firstCard = createGalleryCard(images[0]);
-      gallery.appendChild(firstCard);
-        cardHeight = firstCard.getBoundingClientRect().height;
 
       updateGallery(images);
-       window.scrollBy({
-      top: cardHeight * 2, 
-      behavior: 'smooth',
-    });
+    
     } else {
     iziToast.info({
         title: "Info",
@@ -120,6 +112,14 @@ function hideLoader() {
 
 
 loadMoreBtn.addEventListener("click", async () => {
+   const firstCard = createGalleryCard(images[0]);
+      gallery.appendChild(firstCard);
+  cardHeight = document.querySelector('img').getBoundingClientRect().height;
+  updateGallery(images);
+   window.scrollBy({
+      top: cardHeight * 2, 
+      behavior: 'smooth',
+    });
   loader.textContent = "Loading images, please wait...";
   showLoader();
 
@@ -152,7 +152,6 @@ try {
       }));
 
       updateGallery(images);
-      // можна додати скрол
       lightbox.refresh();
     } else {
       iziToast.info({
@@ -179,16 +178,32 @@ try {
  
 
 function updateGallery(images) {
-  const galleryMarkup = images.reduce((html, image) =>  html + `
-        <a href="${image.largeUrl}" data-lightbox="gallery" data-title="Likes: ${image.likes}, 
-        Views: ${image.views},
-         Comments: ${image.comments}, 
-         Downloads: ${image.downloads}">
-          <img src="${image.url}" alt="${image.alt}" />
-        </a>`, '');
+  const galleryMarkup = images.reduce((html, image) => html + `
+<div class="gallery-item">
+      <img src="${image.largeImageURL}" alt="${image.tags}">
+      <div class="image-info">
+        <div class="img-info-item">
+          <p>Likes:</p>
+          <p>${image.likes}</p>
+        </div>
+        <div class="img-info-item">
+          <p>Views: </p>
+          <p>${image.views}</p>
+        </div>
+        <div class="img-info-item">
+          <p>Comments: </p>
+          <p>${image.comments}</p>
+        </div>
+        <div class="img-info-item">
+          <p>Downloads: </p>
+          <p>${image.downloads}</p>
+        </div>
+      </div>
+    </div>`, '');
   gallery.insertAdjacentHTML('beforeend', galleryMarkup); 
   lightbox.refresh();
 }
+
 
 function toggleLoadMoreButton() {
   if (totalHits > gallery.children.length) {
