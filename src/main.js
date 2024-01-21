@@ -24,6 +24,7 @@ const API_KEY = '41764451-f0ee5e8d00846e21c9f97a054';
 let currentPage = 1;
 let currentQuery = ""; 
 let totalHits = 0;
+let per_page = 40;
 
 
 function showLoader() {
@@ -32,6 +33,7 @@ function showLoader() {
 function hideLoader() {
   loader.style.display = 'none';
 }
+
 
     searchForm.addEventListener('submit', async(event) => {
       event.preventDefault();
@@ -98,17 +100,9 @@ function hideLoader() {
 
 
 loadMoreBtn.addEventListener("click", async () => {
-
-  //    const cardHeight = document.querySelector('gallery-item').getBoundingClientRect().height;
-  //  window.scrollBy({
-  //     top: cardHeight * 2, 
-  //     behavior: 'smooth',
-  //  });
   loader.textContent = "Loading images, please wait...";
   showLoader();
-
  
-
 try {
   const {data: {hits, totalHits}} = await axios.get(`https://pixabay.com/api/`, {
       params: {
@@ -122,7 +116,19 @@ try {
       },
     });
   hideLoader();
-      updateGallery(hits);
+  updateGallery(hits);
+  
+    const cardHeight = document
+      .querySelector('.gallery-item')
+      .getBoundingClientRect().height;
+    
+    console.log(document.querySelector('.gallery-item'));
+
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
+    });
+
   }  catch (error) {
   iziToast.error({
     title: "Error",
