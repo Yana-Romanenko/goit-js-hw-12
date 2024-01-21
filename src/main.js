@@ -117,6 +117,7 @@ try {
     });
   hideLoader();
   updateGallery(hits);
+  lightbox.refresh();
   
     const cardHeight = document
       .querySelector('.gallery-item')
