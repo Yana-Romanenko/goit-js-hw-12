@@ -13,7 +13,7 @@ const gallery = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more-button');
 
 
- const lightbox = new SimpleLightbox('.gallery a', {
+ let lightbox = new SimpleLightbox('.gallery a', {
         captionDelay: 250,
         captionsData: 'alt',
         close: true,
@@ -149,13 +149,13 @@ function updateGallery(images) {
 <li class="gallery-item">
      <a href="${largeImageURL}">
      <img src="${webformatURL}" alt="${tags}">
+     </a>
       <div class="image-info">
           <p>Likes:${likes}</p>
           <p>Views: ${views}</p>
           <p>Comments: ${comments}</p>
   <p>Downloads: ${downloads}</p>
       </div>
-     </a>
     </li>`).join('');
   gallery.insertAdjacentHTML('beforeend', galleryMarkup); 
   lightbox.refresh();
