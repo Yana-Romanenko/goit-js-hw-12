@@ -95,7 +95,7 @@ searchForm.addEventListener('submit', async (event) => {
 
 
   if (currentPage === Math.ceil(totalHits / per_page)) {
-  loadMoreBtn.removeEventListener('click', loadImagesFromSearch);
+    loadMoreBtn.style.display = "none";
    iziToast.info({
     title: "Info",
     message: "We're sorry, but you've reached the end of search results",
@@ -152,7 +152,7 @@ loadMoreBtn.addEventListener("click", async () => {
   
 
   if (currentPage === Math.ceil(totalHits / per_page)) {
-  loadMoreBtn.removeEventListener('click', loadImagesFromSearch);
+    loadMoreBtn.style.display = "none";
    iziToast.info({
     title: "Info",
     message: "We're sorry, but you've reached the end of search results",
