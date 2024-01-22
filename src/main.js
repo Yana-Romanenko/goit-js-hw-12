@@ -70,7 +70,6 @@ searchForm.addEventListener('submit', async (event) => {
     });
     hideLoader();
     totalImages = totalHits;
-    console.log(totalImages);
      
     if (hits.length === 0) {
       loadMoreBtn.style.display = "none";
@@ -96,7 +95,7 @@ searchForm.addEventListener('submit', async (event) => {
   };
 
 
-  if (currentPage === Math.ceil(totalHits / per_page)) {
+  if (currentPage === Math.ceil(totalImages / per_page)) {
     loadMoreBtn.style.display = "none";
    iziToast.info({
     title: "Info",
@@ -128,10 +127,10 @@ loadMoreBtn.addEventListener("click", async () => {
       },
   });
     totalImages = totalHits;
-     console.log(totalImages);
   hideLoader();
     updateGallery(hits);
     lightbox.refresh();
+  
    
     
   
@@ -158,7 +157,7 @@ loadMoreBtn.addEventListener("click", async () => {
   }
   
 
-  if (currentPage === Math.ceil(totalHits / per_page)) {
+  if (currentPage === Math.ceil(totalImages / per_page)) {
     loadMoreBtn.style.display = "none";
    iziToast.info({
     title: "Info",
@@ -168,7 +167,7 @@ loadMoreBtn.addEventListener("click", async () => {
 }
   });
 
- console.log(totalImages);
+
 function updateGallery(images) {
   const galleryMarkup = images.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => `
 <li class="gallery-item">
