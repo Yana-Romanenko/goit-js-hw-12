@@ -23,7 +23,7 @@ const API_KEY = '41764451-f0ee5e8d00846e21c9f97a054';
 
 let currentPage = 1;
 let currentQuery = ""; 
-let totalHits = 0;
+let totalImages = 0;
 let per_page = 40;
 
 
@@ -68,9 +68,11 @@ searchForm.addEventListener('submit', async (event) => {
         per_page: 40,
       }
     });
+    totalImages = totalHits;
     hideLoader();
      
     if (hits.length === 0) {
+      loadMoreBtn.style.display = "none";
       iziToast.info({
         title: "Info",
         message: "Sorry, there are no images matching your search query. Please try again!",
@@ -82,7 +84,6 @@ searchForm.addEventListener('submit', async (event) => {
     lightbox.refresh();
     loadMoreBtn.style.display = "block";
   } catch (error) {
-    console.log(error);
     iziToast.error({
       title: "Error",
       message: "An error occurred while fetching data. Please try again later.",
@@ -109,6 +110,7 @@ searchForm.addEventListener('submit', async (event) => {
 loadMoreBtn.addEventListener("click", async () => {
   loader.textContent = "Loading images, please wait...";
   showLoader();
+  currentPage += 1;
 
  
   try {
@@ -124,9 +126,11 @@ loadMoreBtn.addEventListener("click", async () => {
         per_page: 40,
       },
   });
+    totalImages = totalHits;
   hideLoader();
     updateGallery(hits);
     lightbox.refresh();
+    
   
     const cardHeight = document
       .querySelector('.gallery-item')
@@ -162,7 +166,6 @@ loadMoreBtn.addEventListener("click", async () => {
   });
 
  
-
 function updateGallery(images) {
   const galleryMarkup = images.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => `
 <li class="gallery-item">
