@@ -68,8 +68,9 @@ searchForm.addEventListener('submit', async (event) => {
         per_page: 40,
       }
     });
-    totalImages = totalHits;
     hideLoader();
+    totalImages = totalHits;
+    console.log(totalImages);
      
     if (hits.length === 0) {
       loadMoreBtn.style.display = "none";
@@ -127,9 +128,11 @@ loadMoreBtn.addEventListener("click", async () => {
       },
   });
     totalImages = totalHits;
+     console.log(totalImages);
   hideLoader();
     updateGallery(hits);
     lightbox.refresh();
+   
     
   
     const cardHeight = document
@@ -165,7 +168,7 @@ loadMoreBtn.addEventListener("click", async () => {
 }
   });
 
- 
+ console.log(totalImages);
 function updateGallery(images) {
   const galleryMarkup = images.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => `
 <li class="gallery-item">
